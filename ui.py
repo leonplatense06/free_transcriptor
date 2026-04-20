@@ -23,7 +23,7 @@ class CozyApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Transcriptor Cozy")
+        self.title("Transcriptor La Ranita")
         self.geometry("400x560")
         self.configure(fg_color=BG_COLOR)
         self.resizable(False, True)
