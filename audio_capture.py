@@ -4,8 +4,8 @@ import queue
 import sys
 
 class SystemAudioCapture:
-    def __init__(self, sample_rate=16000):
-        self.sample_rate = sample_rate
+    def __init__(self):
+        self.sample_rate = 16000
         self.q = queue.Queue()
         self.stream = None
         self.is_recording = False
@@ -26,8 +26,10 @@ class SystemAudioCapture:
             try:
                 wasapi_info = sd.query_hostapis(sd.find_hostapi('WASAPI'))
                 device_id = wasapi_info['default_output_device']
-                extra_settings = sd.WasapiSettings(loopback=True)
                 device_info = sd.query_devices(device_id)
+
+                self.sample_rate = int(device_info["default_samplerate"])
+                extra_settings = sd.WasapiSettings(loopback=True)
                 channels = device_info['max_input_channels'] or 2
             except Exception as e:
                 print(f"Advertencia con WASAPI: {e}")
@@ -48,7 +50,7 @@ class SystemAudioCapture:
             self.stream.stop()
             self.stream.close()
 
-    def get_chunk(self, duration=3.0):
+    def get_chunk(self, duration=6.0):
         frames_needed = int(self.sample_rate * duration)
         frames = []
         frames_gathered = 0
